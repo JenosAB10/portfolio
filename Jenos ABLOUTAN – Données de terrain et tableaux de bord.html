@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jenos ABLOUTAN – Données de terrain et tableaux de bord</title>
+<meta name="description" content="Collecte (Kobo, Forms), analyse (Excel, Stata, SQL) et tableaux de bord Power BI pour ONG, projets et PME au Bénin.">
+<meta property="og:title" content="Jenos ABLOUTAN – Données de terrain et tableaux de bord">
+<meta property="og:description" content="Vos données de terrain, enfin lisibles.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#101114">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#101114;--panel:#17181C;--panel2:#202228;--line:#2B2E35;--text:#F5F5F6;--muted:#9AA0AB;
+  --yellow:#F7A600;--ink:#101114;--up:#2EC27E;--down:#F0575C;--acc:#F7A600;--bar:#F7A600;--focus:#F7A600;
+  --font:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="light"]{--bg:#fff;--panel:#F5F6F7;--panel2:#ECEEF0;--line:#DDE0E4;--text:#121214;--muted:#5A616D;--up:#0B8450;--down:#C9302F;--acc:#8A5A00;--bar:#B87800;--focus:#121214}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 4.5rem)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1.0625rem/1.6 var(--font)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:20}
+.wrap{max-width:1160px;margin:0 auto;padding:0 1.25rem}
+h1,h2,h3{margin:0;line-height:1.12;letter-spacing:-.015em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:0;padding:.7rem 1rem;background:var(--yellow);color:var(--ink);z-index:30}
+.skip:focus{left:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.6rem 1.4rem;border-radius:10px;font:600 1rem var(--font);text-decoration:none;background:var(--yellow);color:var(--ink);border:1.5px solid var(--yellow);cursor:pointer;transition:background-color .15s}
+.btn:hover{background:#FFB91F}
+.btn.line{background:transparent;color:var(--text);border-color:var(--line)}
+.btn.line:hover{background:var(--panel2)}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:4rem}
+.brand{display:flex;align-items:center;gap:.65rem;font-weight:700;text-decoration:none}
+.mark{width:34px;height:34px;border-radius:8px;background:var(--yellow);color:var(--ink);display:grid;place-items:center;font-size:.95rem;font-weight:700}
+nav{display:flex;align-items:center;gap:.25rem}
+nav a:not(.btn){padding:.75rem .85rem;text-decoration:none;color:var(--muted);font-size:.97rem}
+nav a:not(.btn):hover{color:var(--text)}
+.icon{width:44px;height:44px;display:grid;place-items:center;background:transparent;border:0;color:var(--text);cursor:pointer;border-radius:10px;margin:0 .3rem}
+.icon:hover{background:var(--panel2)}
+
+.hero{padding:4rem 0 3.5rem}
+.hero .wrap{display:grid;grid-template-columns:1.1fr 1fr;gap:3rem;align-items:center}
+h1{font-size:clamp(2.5rem,6.2vw,4.5rem);font-weight:700}
+.lead{color:var(--muted);font-size:1.15rem;max-width:32rem;margin:1.3rem 0 2rem}
+.ask{max-width:31rem}
+.ask label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:.4rem}
+.field{display:flex;gap:.5rem;padding:.4rem;border:1.5px solid var(--line);border-radius:12px;background:var(--panel)}
+.field:focus-within{border-color:var(--yellow)}
+.field input{flex:1;min-width:0;min-height:44px;padding:0 .8rem;background:transparent;border:0;color:var(--text);font:400 1rem var(--font);outline:none}
+.field input::placeholder{color:var(--muted)}
+.field .btn{min-height:44px;white-space:nowrap}
+.mini{margin:.8rem 0 0;font-size:.92rem;color:var(--muted)}
+.mini a{color:var(--text)}
+
+.term{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:1.3rem}
+.term-head{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+.term-head h2{font-size:1rem;font-weight:600}
+.tag{font-size:.78rem;padding:.15rem .55rem;border-radius:6px;background:var(--panel2);color:var(--muted);font-weight:500}
+.seg{display:flex;gap:.2rem;margin:1rem 0;border-bottom:1px solid var(--line);overflow-x:auto}
+.seg button{min-height:44px;padding:0 .9rem;background:transparent;border:0;border-bottom:2px solid transparent;color:var(--muted);font:500 .97rem var(--font);cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{color:var(--text);border-bottom-color:var(--yellow)}
+.big{font-size:2.8rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.sub{color:var(--muted);font-size:.9rem;margin-top:.35rem}
+.chg{font-weight:600;font-variant-numeric:tabular-nums}
+.chg.up{color:var(--up)}.chg.down{color:var(--down)}
+.comp{display:flex;align-items:center;gap:.8rem;margin:1.1rem 0 1.2rem;font-size:.92rem;color:var(--muted)}
+.comp b{color:var(--text);font-variant-numeric:tabular-nums;min-width:3.2rem}
+.track{flex:1;height:6px;border-radius:9px;background:var(--panel2);overflow:hidden}
+.track i{display:block;height:100%;background:var(--up);transform-origin:left;transform:scaleX(0);transition:transform .6s ease}
+.bars{display:grid;grid-template-columns:repeat(6,1fr);gap:.55rem}
+.col{display:flex;flex-direction:column;align-items:center}
+.col .s{height:5.5rem;width:100%;display:flex;align-items:flex-end}
+.col i{display:block;width:100%;height:100%;background:var(--bar);opacity:.5;border-radius:4px 4px 0 0;transform-origin:bottom;transform:scaleY(0);transition:transform .5s ease}
+.col:last-child i{opacity:1}
+.col b{font:600 .85rem var(--font);margin-top:.35rem;font-variant-numeric:tabular-nums}
+.col small{font-size:.75rem;color:var(--muted)}
+
+.stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--panel)}
+.stats .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
+.stat{padding:1.6rem 1.2rem 1.6rem 0}
+.stat b{display:block;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:.95rem}
+.ph{border-bottom:2px dashed var(--yellow)}
+
+section.s{padding:4rem 0}
+.sec-head{margin-bottom:1.8rem;max-width:38rem}
+.sec-head h2{font-size:clamp(1.8rem,3.8vw,2.6rem);font-weight:700}
+.sec-head p{color:var(--muted);margin:.7rem 0 0}
+.tbl{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
+.row{display:grid;grid-template-columns:1fr 1.7fr auto;gap:1rem;align-items:center;padding:1rem 1.3rem;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row.h{color:var(--muted);font-size:.85rem;padding:.7rem 1.3rem;background:var(--panel2)}
+.row b{font-weight:600}
+.row span{color:var(--muted)}
+.pill{font-size:.82rem;font-weight:600;padding:.2rem .65rem;border-radius:6px;justify-self:end;min-width:5.5rem;text-align:center}
+.p1{background:rgba(247,166,0,.16);color:var(--acc)}.p2{background:rgba(46,194,126,.16);color:var(--up)}.p3{background:var(--panel2);color:var(--text)}
+
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.case{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.4rem;display:flex;flex-direction:column;gap:1rem}
+.case h3{font-size:1.2rem}
+.case dt{font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:.15rem}
+.case dd{margin:0}
+.case dl{margin:0;display:grid;gap:.9rem}
+.res{margin-top:auto;border-top:1px solid var(--line);padding-top:1rem}
+.res dd{color:var(--text);font-weight:600}
+.res dt{color:var(--acc)}
+
+.who{display:grid;grid-template-columns:auto 1fr;gap:2.2rem;align-items:start}
+.avatar{width:150px;height:150px;border-radius:20px;background:var(--yellow);color:var(--ink);display:grid;place-items:center;font-size:3rem;font-weight:700}
+.who p{margin:0 0 1rem;max-width:40rem}
+.who ul{margin:0;padding:0;list-style:none;display:grid;gap:.5rem;color:var(--muted)}
+.who li::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--yellow);margin-right:.7rem}
+
+.band{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:2.8rem 1.8rem;display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:3rem}
+.band h2{font-size:clamp(1.7rem,3.6vw,2.4rem);max-width:26rem}
+.band p{margin:.5rem 0 0;color:var(--muted)}
+.cta{display:flex;gap:.7rem;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);padding:2rem 0;color:var(--muted);font-size:.92rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+footer a{color:var(--text)}
+.sticky{display:none}
+
+@media (max-width:860px){
+  .hero{padding:2.2rem 0}
+  .hero .wrap,.who,.cases{grid-template-columns:1fr}
+  .stats .wrap{grid-template-columns:1fr}
+  .stat{padding:1rem 0;border-top:1px solid var(--line)}.stat:first-child{border-top:0}
+  nav a:not(.btn){display:none}
+  .row{grid-template-columns:1fr auto}.row span{grid-column:1/-1;grid-row:2}.row.h span{display:none}
+  .avatar{width:96px;height:96px;font-size:2rem;border-radius:14px}
+  body{padding-bottom:5.5rem}
+  .sticky{display:block;position:fixed;left:0;right:0;bottom:0;z-index:12;padding:.7rem 1rem calc(.7rem + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .25s}
+  .sticky.on{transform:none}.sticky .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}html{scroll-behavior:auto}}
+main[hidden]{display:none}
+.more{color:var(--acc);font-weight:600}
+.chains{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.chain{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.2rem}
+.chain b{display:block;margin-bottom:.3rem}.chain span{color:var(--muted)}
+.tool{display:grid;grid-template-columns:1fr 1.3fr;gap:1.4rem;padding:1.8rem 0;border-top:1px solid var(--line)}
+.tool h3{font-size:1.35rem;display:inline-block;margin-right:.6rem;vertical-align:middle}
+.tool .pill{display:inline-block;vertical-align:middle;min-width:0}
+.tool dl{margin:1rem 0 0;display:grid;gap:.4rem}.tool dt{font-size:.82rem;color:var(--muted);font-weight:600;margin-top:.5rem}.tool dd{margin:0}
+.out{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;overflow-x:auto;min-width:0}
+.out .cap{font-size:.8rem;color:var(--muted);margin:0 0 .6rem}
+.out table{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+.out th{text-align:left;color:var(--muted);font-weight:600;padding:.3rem .8rem .3rem 0;border-bottom:1px solid var(--line)}
+.out td{padding:.4rem .8rem .4rem 0;border-bottom:1px solid var(--line)}
+.out pre{margin:0 0 .8rem;font:.85rem/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;color:var(--text)}
+.out .kv{margin:.7rem 0 0;font-size:.88rem;color:var(--muted)}
+.hb{display:grid;grid-template-columns:4.5rem 1fr 3rem;gap:.7rem;align-items:center;font-size:.9rem;margin:.55rem 0}
+.docs{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.2rem}
+.doc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.3rem}
+.doc h3{font-size:1.1rem;margin-bottom:.7rem}.doc p{margin:0 0 .6rem}
+.doc.easy{border-color:var(--yellow)}
+@media (max-width:860px){.chains,.tool,.docs{grid-template-columns:1fr}nav a.keep{display:inline-block}}
+</style>
+</head>
+<body>
+<a class="skip" href="#top">Aller au contenu</a>
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top"><span class="mark" aria-hidden="true">JA</span>Jenos ABLOUTAN</a>
+    <nav aria-label="Navigation principale">
+      <a href="#outils">Outils</a><a href="#projets">Projets</a><a class="keep" href="#logiciels">Logiciels</a><a href="#about">À propos</a>
+      <button class="icon" id="theme" type="button" aria-label="Passer en thème clair" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+      <a class="btn" href="#contact">Me contacter</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Vos données de terrain, enfin lisibles.</h1>
+        <p class="lead">Je m’appelle Jenos. Je conçois la collecte, l’analyse et les tableaux de bord des ONG, des projets et des PME du Bénin.</p>
+        <div class="ask">
+          <label for="need">Décrivez votre besoin en une phrase</label>
+          <div class="field">
+            <input id="need" type="text" placeholder="Ex. : suivre une enquête auprès de 500 ménages" autocomplete="off">
+            <a class="btn" id="wa" href="https://wa.me/2290194569611" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
+          </div>
+          <p class="mini">Sans engagement. Ou par e-mail : <a href="mailto:abloutanj@gmail.com">abloutanj@gmail.com</a></p>
+        </div>
+      </div>
+      <div class="term" role="region" aria-label="Démo interactive de tableau de bord">
+        <div class="term-head"><h2>Suivi d’enquête</h2><span class="tag">Démo, données fictives</span></div>
+        <div class="seg" role="group" aria-label="Filtrer par zone">
+          <button type="button" data-z="all" aria-pressed="true">Toutes</button><button type="button" data-z="n" aria-pressed="false">Nord</button><button type="button" data-z="c" aria-pressed="false">Centre</button><button type="button" data-z="s" aria-pressed="false">Sud</button>
+        </div>
+        <div aria-live="polite">
+          <div class="big" id="kn">0</div>
+          <div class="sub">Fiches reçues, <span class="chg" id="chg">0 %</span> cette semaine</div>
+        </div>
+        <div class="comp"><span>Fiches complètes</span><b id="kc">0 %</b><div class="track"><i id="cbar"></i></div></div>
+        <div class="bars">
+          <div class="col"><div class="s"><i></i></div><b>0</b><small>S1</small></div><div class="col"><div class="s"><i></i></div><b>0</b><small>S2</small></div><div class="col"><div class="s"><i></i></div><b>0</b><small>S3</small></div><div class="col"><div class="s"><i></i></div><b>0</b><small>S4</small></div><div class="col"><div class="s"><i></i></div><b>0</b><small>S5</small></div><div class="col"><div class="s"><i></i></div><b>0</b><small>S6</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="wrap">
+      <div class="stat"><b>8 outils</b><span>de la collecte au tableau de bord, de Kobo à Tableau</span></div>
+      <div class="stat"><b>3 étapes</b><span>collecter, analyser, montrer, avec un seul interlocuteur</span></div>
+      <div class="stat"><b>2 livrables</b><span>un rapport de méthodes et d’interprétations, une synthèse pour les non-spécialistes</span></div>
+    </div>
+  </div>
+
+  <section class="s" id="outils">
+    <div class="wrap">
+      <div class="sec-head"><h2>Les outils que j’utilise</h2><p>Chaque outil a un rôle précis : collecter, analyser ou montrer.</p><p><a class='more' href='#logiciels'>Voir chaque outil en action, avec des sorties d’exemple</a></p></div>
+      <div class="tbl">
+        <div class="row h"><div>Outil</div><span>Ce que j’en fais</span><div style="justify-self:end">Étape</div></div>
+        <div class="row"><b>KoboToolbox</b><span>Collecte sur téléphone, même sans connexion</span><div class="pill p1">Collecter</div></div>
+        <div class="row"><b>Google Forms, Microsoft Forms, LimeSurvey</b><span>Inscriptions, enquêtes de satisfaction, questionnaires longs</span><div class="pill p1">Collecter</div></div>
+        <div class="row"><b>Excel</b><span>Nettoyage, tableaux croisés, premiers indicateurs</span><div class="pill p2">Analyser</div></div>
+        <div class="row"><b>Stata</b><span>Statistiques et économétrie</span><div class="pill p2">Analyser</div></div>
+        <div class="row"><b>SQL et Python</b><span>Interroger les bases de données, automatiser le nettoyage</span><div class="pill p2">Analyser</div></div>
+        <div class="row"><b>Power BI, Tableau</b><span>Tableaux de bord interactifs mis à jour en continu</span><div class="pill p3">Montrer</div></div>
+        <div class="row"><b>Rapport d’analyse</b><span>Toutes les méthodes utilisées et l’interprétation des résultats, pour les experts</span><div class="pill p3">Livrer</div></div>
+        <div class="row"><b>Note de synthèse</b><span>L’essentiel en langage simple, pour une personne qui n’est pas du métier</span><div class="pill p3">Livrer</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="projets" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><h2>Trois situations, ce qui change</h2></div>
+      <div class="cases">
+        <article class="case"><h3>Enquête d’une ONG</h3>
+          <dl><div><dt>Problème</dt><dd>Les fiches papier arrivent en retard et les erreurs de saisie faussent les indicateurs.</dd></div>
+          <div><dt>Solution</dt><dd>Questionnaire Kobo avec contrôles de saisie, collecte hors ligne, tableau de bord Power BI ou Tableau.</dd></div></dl>
+          <dl class="res"><div><dt>Valeur ajoutée</dt><dd>Données propres <span class="ph">[X] jours</span> après la collecte, au lieu de <span class="ph">[Y] semaines</span>.</dd></div></dl></article>
+        <article class="case"><h3>Suivi d’un événement</h3>
+          <dl><div><dt>Problème</dt><dd>Des listes sur WhatsApp et des feuilles de présence : impossible de savoir qui est venu et ce qu’ils ont pensé.</dd></div>
+          <div><dt>Solution</dt><dd>Formulaire d’inscription, émargement numérique et questionnaire de satisfaction reliés à un tableau de bord.</dd></div></dl>
+          <dl class="res"><div><dt>Valeur ajoutée</dt><dd>Présence et satisfaction connues le jour même, rapport bailleur prêt en <span class="ph">[X] minutes</span>.</dd></div></dl></article>
+        <article class="case"><h3>Analyse économique</h3>
+          <dl><div><dt>Problème</dt><dd>Une base volumineuse et des décisions prises à l’intuition.</dd></div>
+          <div><dt>Solution</dt><dd>Nettoyage, statistiques descriptives et modèle simple, restitués en trois recommandations chiffrées.</dd></div></dl>
+          <dl class="res"><div><dt>Valeur ajoutée</dt><dd>Une décision appuyée par des chiffres : un rapport complet pour les experts et une synthèse claire pour les non-spécialistes.</dd></div></dl></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="about" style="padding-top:0">
+    <div class="wrap who">
+      <div class="avatar" aria-hidden="true">JA</div>
+      <div>
+        <div class="sec-head" style="margin-bottom:1rem"><h2>Qui est derrière les chiffres</h2></div>
+        <p>Je suis étudiant en troisième année d’économie à l’Université de Parakou, en Analyse et Politique Économique. J’ai fait mon stage académique chez Job Booster Social Enterprise Bénin.</p>
+        <p>Je préfère un graphique clair à dix tableaux illisibles. Chaque chiffre que je livre sert à prendre une décision.</p>
+        <ul><li>Formulaires courts, pensés pour le téléphone</li><li>Collecte possible sans connexion</li><li>Deux documents : un rapport détaillé pour les experts, une synthèse pour tous</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="padding:0 0 1rem">
+    <div class="wrap">
+      <div class="band">
+        <div><h2>Parlons de vos données.</h2><p>Un message suffit pour commencer.</p></div>
+        <div class="cta"><a class="btn" href="https://wa.me/2290194569611?text=Bonjour%20Jenos%2C%20j%E2%80%99ai%20un%20projet%20de%20collecte%20ou%20de%20tableau%20de%20bord." target="_blank" rel="noopener">WhatsApp : +229 01 94 56 96 11</a><a class="btn line" href="mailto:abloutanj@gmail.com">abloutanj@gmail.com</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<main id='logiciels' hidden>
+<section class='s' style='padding-bottom:1rem'><div class='wrap'>
+<div class='sec-head'><h2>Les logiciels en action</h2><p>Ce que chaque outil produit, seul ou combiné. Toutes les sorties ci-dessous sont des exemples sur données fictives.</p></div>
+<div class='chains'>
+<div class='chain'><b>Enquête de terrain</b><span>Kobo → Excel → Power BI</span></div>
+<div class='chain'><b>Suivi d’un événement</b><span>Forms → Excel → Tableau</span></div>
+<div class='chain'><b>Analyse économique</b><span>SQL → Python → Stata → rapport</span></div>
+</div>
+
+<article class='tool' id='logiciels-kobo'><div><h3>KoboToolbox</h3> <span class='pill p1'>Collecter</span><dl><dt>Seul</dt><dd>Un questionnaire sur téléphone, avec contrôles de saisie et collecte sans connexion.</dd><dt>Combiné</dt><dd>Export vers Excel ou Power BI : les fiches arrivent déjà propres.</dd></dl></div>
+<div class='out'><p class='cap'>Sortie d’exemple : fiches reçues</p><table><tr><th>Fiche</th><th>Zone</th><th>Statut</th><th>Contrôle</th></tr><tr><td>0411</td><td>Nord</td><td>Complète</td><td>Validée</td></tr><tr><td>0412</td><td>Sud</td><td>Complète</td><td>Validée</td></tr><tr><td>0413</td><td>Centre</td><td>Incomplète</td><td>Âge manquant</td></tr></table></div></article>
+
+<article class='tool' id='logiciels-forms'><div><h3>Google Forms, Microsoft Forms, LimeSurvey</h3> <span class='pill p1'>Collecter</span><dl><dt>Seul</dt><dd>Inscriptions et enquêtes de satisfaction, avec réponses résumées automatiquement.</dd><dt>Combiné</dt><dd>Les réponses alimentent Excel ou Tableau pour un suivi en direct.</dd></dl></div>
+<div class='out'><p class='cap'>Sortie d’exemple : satisfaction d’un événement</p><table><tr><th>Critère</th><th>Note sur 5</th></tr><tr><td>Organisation</td><td>4,4</td></tr><tr><td>Contenu</td><td>4,2</td></tr><tr><td>Durée</td><td>3,6</td></tr></table><p class='kv'>Présence : 87 participants sur 100 inscrits</p></div></article>
+
+<article class='tool' id='logiciels-excel'><div><h3>Excel</h3> <span class='pill p2'>Analyser</span><dl><dt>Seul</dt><dd>Nettoyage, tableaux croisés dynamiques et premiers indicateurs.</dd><dt>Combiné</dt><dd>Sert de pont entre la collecte (Kobo, Forms) et les tableaux de bord.</dd></dl></div>
+<div class='out'><p class='cap'>Sortie d’exemple : tableau croisé par zone</p><table><tr><th>Zone</th><th>Fiches</th><th>Complètes</th></tr><tr><td>Nord</td><td>148</td><td>91 %</td></tr><tr><td>Centre</td><td>126</td><td>95 %</td></tr><tr><td>Sud</td><td>138</td><td>96 %</td></tr><tr><td><b>Total</b></td><td><b>412</b></td><td><b>94 %</b></td></tr></table></div></article>
+
+<article class='tool' id='logiciels-sql'><div><h3>SQL</h3> <span class='pill p2'>Analyser</span><dl><dt>Seul</dt><dd>Interroger directement une base de données pour extraire et regrouper l’information.</dd><dt>Combiné</dt><dd>Alimente Python, Stata ou Power BI avec des données déjà filtrées.</dd></dl></div>
+<div class='out'><p class='cap'>Sortie d’exemple : requête et résultat</p><pre>SELECT zone, COUNT(*) AS fiches,
+       ROUND(AVG(complete)*100) AS taux
+FROM enquete GROUP BY zone;</pre><table><tr><th>zone</th><th>fiches</th><th>taux</th></tr><tr><td>Nord</td><td>148</td><td>91</td></tr><tr><td>Centre</td><td>126</td><td>95</td></tr><tr><td>Sud</td><td>138</td><td>96</td></tr></table></div></article>
+
+<article class='tool' id='logiciels-python'><div><h3>Python</h3> <span class='pill p2'>Analyser</span><dl><dt>Seul</dt><dd>Automatiser le nettoyage et les contrôles qui se répètent à chaque collecte.</dd><dt>Combiné</dt><dd>Prépare les données avant Stata ou Power BI, à partir de SQL ou d’Excel.</dd></dl></div>
+<div class='out'><p class='cap'>Sortie d’exemple : script et journal</p><pre>df = df.drop_duplicates('id_fiche')
+df['age'] = df['age'].clip(15, 99)
+
+Doublons retirés : 17
+Âges corrigés : 9</pre></div></article>
+
+<article class='tool' id='logiciels-stata'><div><h3>Stata</h3> <span class='pill p2'>Analyser</span><dl><dt>Seul</dt><dd>Statistiques descriptives et régressions pour répondre à une question précise.</dd><dt>Combiné</dt><dd>Reçoit des données nettoyées par Python ou SQL. Ses résultats nourrissent le rapport d’analyse.</dd></dl></div>
+<div class='out'><p class='cap'>Sortie d’exemple : régression du revenu (log)</p><table><tr><th>Variable</th><th>Coef.</th><th>Err. std.</th><th>p</th></tr><tr><td>Éducation (années)</td><td>0,082</td><td>0,011</td><td>0,000</td></tr><tr><td>Âge</td><td>0,015</td><td>0,006</td><td>0,013</td></tr></table><p class='kv'>N = 412 · R² = 0,31</p></div></article>
+
+<article class='tool' id='logiciels-bi'><div><h3>Power BI, Tableau</h3> <span class='pill p3'>Montrer</span><dl><dt>Seul</dt><dd>Tableaux de bord interactifs, avec filtres par zone, période ou thème.</dd><dt>Combiné</dt><dd>Se branchent sur Kobo, Excel ou SQL et se mettent à jour à chaque synchronisation.</dd></dl></div>
+<div class='out'><p class='cap'>Sortie d’exemple : complétude par zone</p><div class='hb'><span>Nord</span><div class='track'><i style='transform:scaleX(.91)'></i></div><b>91 %</b></div><div class='hb'><span>Centre</span><div class='track'><i style='transform:scaleX(.95)'></i></div><b>95 %</b></div><div class='hb'><span>Sud</span><div class='track'><i style='transform:scaleX(.96)'></i></div><b>96 %</b></div><p class='kv'>412 fiches · 94 % complètes · zone la plus complète : Sud</p></div></article>
+
+<div class='sec-head' style='margin:2.5rem 0 0'><h2>Les deux documents livrés</h2><p>Les mêmes résultats, racontés pour deux lecteurs différents.</p></div>
+<div class='docs'>
+<div class='doc'><h3>Rapport d’analyse, pour les experts</h3><p>Méthode : régression linéaire (moindres carrés ordinaires), N = 412, variable expliquée : logarithme du revenu.</p><p>Résultat : le coefficient de l’éducation est de 0,082 (p &lt; 0,001), soit environ 8 % de revenu en plus par année d’études, toutes choses égales par ailleurs.</p><p>Limite : données transversales, causalité non établie.</p></div>
+<div class='doc easy'><h3>Note de synthèse, pour tous</h3><p>En clair : plus les personnes ont étudié longtemps, plus leur revenu est élevé.</p><p>À retenir : chaque année d’études compte, la collecte est fiable (94 % de fiches complètes), et le suivi doit être renforcé dans le Nord, où les fiches sont les moins complètes.</p></div>
+</div>
+<div class='cta' style='margin-top:2rem'><a class='btn' href='https://wa.me/2290194569611?text=Bonjour%20Jenos%2C%20j%E2%80%99ai%20un%20projet%20de%20collecte%20ou%20de%20tableau%20de%20bord.' target='_blank' rel='noopener'>Écrire sur WhatsApp</a><a class='btn line' href='#top'>Retour à l’accueil</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>Jenos ABLOUTAN, Parakou, Bénin</span><span><a href="#outils">Outils</a> · <a href="#projets">Projets</a> · <a href="#logiciels">Logiciels</a> · <a href="#contact">Contact</a></span></div></footer>
+<div class="sticky" id="sticky"><a class="btn" href="https://wa.me/2290194569611?text=Bonjour%20Jenos%2C%20j%E2%80%99ai%20un%20projet%20de%20collecte%20ou%20de%20tableau%20de%20bord." target="_blank" rel="noopener">Écrire sur WhatsApp</a></div>
+
+<script>
+(function(){
+var D={all:{n:412,c:94,b:[48,62,71,85,70,76]},n:{n:148,c:91,b:[16,22,25,31,25,29]},c:{n:126,c:95,b:[14,18,21,26,22,25]},s:{n:138,c:96,b:[18,22,25,28,23,22]}};
+var rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function tween(el,to,suf){var from=+el.dataset.v||0;el.dataset.v=to;if(rm){el.textContent=to+suf;return}var t0=performance.now();(function f(t){var k=Math.min((t-t0)/650,1);k=1-Math.pow(1-k,3);el.textContent=Math.round(from+(to-from)*k)+suf;if(k<1)requestAnimationFrame(f)})(t0)}
+var segs=document.querySelectorAll('[data-z]'),cols=document.querySelectorAll('.col'),kn=document.getElementById('kn'),kc=document.getElementById('kc'),cb=document.getElementById('cbar'),chg=document.getElementById('chg');
+function show(z){var d=D[z],m=Math.max.apply(null,d.b),p=d.b[4],l=d.b[5],pc=(l-p)/p*100;tween(kn,d.n,'');tween(kc,d.c,' %');cb.style.transform='scaleX('+d.c/100+')';chg.textContent=(pc>=0?'▲ +':'▼ ')+pc.toFixed(1).replace('.',',')+' %';chg.className='chg '+(pc>=0?'up':'down');cols.forEach(function(c,i){c.querySelector('i').style.transform='scaleY('+d.b[i]/m+')';c.querySelector('b').textContent=d.b[i]});segs.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.z===z))})}
+segs.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.z)})});
+var need=document.getElementById('need'),wa=document.getElementById('wa');
+function link(){var v=need.value.trim();wa.href='https://wa.me/2290194569611?text='+encodeURIComponent('Bonjour Jenos, '+(v||'j’ai un projet de collecte ou de tableau de bord.'))}
+need.addEventListener('input',link);need.addEventListener('keydown',function(e){if(e.key==='Enter'){link();wa.click()}});link();
+var root=document.documentElement,tb=document.getElementById('theme');
+tb.addEventListener('click',function(){var toLight=root.dataset.theme!=='light';root.dataset.theme=toLight?'light':'dark';tb.setAttribute('aria-pressed',String(toLight));tb.setAttribute('aria-label',toLight?'Passer en thème sombre':'Passer en thème clair')});
+var sc=document.getElementById('sticky');
+new IntersectionObserver(function(e){sc.classList.toggle('on',!e[0].isIntersecting)}).observe(document.querySelector('.hero'));
+setTimeout(function(){show('all')},300);
+var home=document.getElementById('top'),pg=document.getElementById('logiciels'),skip=document.querySelector('.skip');
+function route(){var h=location.hash.slice(1),p=h==='logiciels'||h.indexOf('logiciels-')===0;home.hidden=p;pg.hidden=!p;skip.setAttribute('href',p?'#logiciels':'#top');var t=h&&document.getElementById(h);if(t&&t!==pg){t.scrollIntoView()}else{scrollTo(0,0)}}
+addEventListener('hashchange',route);route();
+})();
+</script>
+</body>
+</html>
